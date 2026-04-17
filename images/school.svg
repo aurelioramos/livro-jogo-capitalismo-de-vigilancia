@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<rect width="1280" height="720" fill="#dff4ff"/>
+<rect y="520" width="1280" height="200" fill="#b7e9c7"/>
+<circle cx="1100" cy="110" r="52" fill="#fde68a"/>
+<rect x="220" y="180" width="840" height="360" rx="18" fill="#b7d7ff" stroke="#2563eb" stroke-width="4"/>
+<path d="M180 190 640 70 1100 190" fill="#60a5fa"/>
+<rect x="610" y="100" width="60" height="90" rx="10" fill="#1d4ed8"/>
+<rect x="300" y="250" width="150" height="110" rx="12" fill="#fff"/>
+<rect x="565" y="250" width="150" height="110" rx="12" fill="#fff"/>
+<rect x="830" y="250" width="150" height="110" rx="12" fill="#fff"/>
+<rect x="580" y="390" width="120" height="150" rx="12" fill="#fff7ed"/>
+<path d="M240 565 Q640 500 1040 565" fill="none" stroke="#34d399" stroke-width="12" stroke-linecap="round"/>
+<g>
+  <circle cx="320" cy="520" r="34" fill="#f59e0b"/>
+  <rect x="286" y="555" width="68" height="92" rx="24" fill="#f97316"/>
+  <circle cx="960" cy="520" r="34" fill="#22c55e"/>
+  <rect x="926" y="555" width="68" height="92" rx="24" fill="#10b981"/>
+</g>
+<text x="640" y="640" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" fill="#1e3a8a">Escola Estadual Horizonte Aberto</text>
+</svg>

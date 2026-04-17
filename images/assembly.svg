@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<rect width="1280" height="720" fill="#ecfdf5"/>
+<circle cx="360" cy="250" r="70" fill="#60a5fa"/>
+<circle cx="640" cy="210" r="78" fill="#34d399"/>
+<circle cx="920" cy="250" r="70" fill="#f59e0b"/>
+<rect x="300" y="320" width="120" height="190" rx="36" fill="#3b82f6"/>
+<rect x="570" y="295" width="140" height="215" rx="40" fill="#10b981"/>
+<rect x="860" y="320" width="120" height="190" rx="36" fill="#f97316"/>
+<rect x="280" y="560" width="720" height="28" rx="14" fill="#86efac"/>
+<rect x="120" y="120" width="180" height="90" rx="16" fill="#dbeafe"/>
+<rect x="980" y="120" width="180" height="90" rx="16" fill="#dbeafe"/>
+<text x="210" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#1d4ed8">Grêmio</text>
+<text x="1070" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#1d4ed8">Famílias</text>
+<text x="640" y="655" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" fill="#334155">Conselho escolar e ação coletiva</text>
+</svg>

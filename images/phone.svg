@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<rect width="1280" height="720" fill="#eaf4ff"/>
+<rect x="460" y="60" width="360" height="600" rx="42" fill="#1e293b"/>
+<rect x="490" y="110" width="300" height="470" rx="22" fill="#e0f2fe"/>
+<circle cx="640" cy="620" r="20" fill="#94a3b8"/>
+<rect x="530" y="170" width="90" height="90" rx="22" fill="#60a5fa"/>
+<rect x="660" y="170" width="90" height="90" rx="22" fill="#34d399"/>
+<rect x="530" y="290" width="90" height="90" rx="22" fill="#fbbf24"/>
+<rect x="660" y="290" width="90" height="90" rx="22" fill="#f472b6"/>
+<rect x="530" y="420" width="220" height="28" rx="14" fill="#93c5fd"/>
+<rect x="530" y="465" width="180" height="28" rx="14" fill="#93c5fd"/>
+<g transform="translate(790,120)">
+  <ellipse cx="190" cy="90" rx="150" ry="70" fill="#dbeafe"/>
+  <ellipse cx="190" cy="90" rx="100" ry="42" fill="#fff"/>
+  <circle cx="190" cy="90" r="24" fill="#2563eb"/>
+</g>
+<g>
+  <circle cx="280" cy="180" r="26" fill="#ef4444"/>
+  <text x="280" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" fill="white">!</text>
+  <circle cx="300" cy="300" r="26" fill="#ef4444"/>
+  <text x="300" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" fill="white">!</text>
+  <circle cx="260" cy="420" r="26" fill="#ef4444"/>
+  <text x="260" y="430" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" fill="white">!</text>
+</g>
+<text x="640" y="695" text-anchor="middle" font-family="Arial, sans-serif" font-size="40" fill="#334155">Notificações, apps e influência digital</text>
+</svg>

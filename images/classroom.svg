@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<rect width="1280" height="720" fill="#fffde7"/>
+<rect x="100" y="80" width="1080" height="220" rx="24" fill="#dcfce7"/>
+<rect x="180" y="130" width="920" height="130" rx="14" fill="#14532d"/>
+<rect x="220" y="165" width="240" height="14" rx="7" fill="#fde68a"/>
+<rect x="220" y="200" width="190" height="14" rx="7" fill="#fde68a"/>
+<rect x="220" y="235" width="290" height="14" rx="7" fill="#fde68a"/>
+<rect x="170" y="410" width="240" height="110" rx="14" fill="#bfdbfe"/>
+<rect x="520" y="410" width="240" height="110" rx="14" fill="#bfdbfe"/>
+<rect x="870" y="410" width="240" height="110" rx="14" fill="#bfdbfe"/>
+<rect x="170" y="545" width="240" height="38" rx="10" fill="#93c5fd"/>
+<rect x="520" y="545" width="240" height="38" rx="10" fill="#93c5fd"/>
+<rect x="870" y="545" width="240" height="38" rx="10" fill="#93c5fd"/>
+<text x="640" y="650" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" fill="#334155">Sala de aula</text>
+</svg>
