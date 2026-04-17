@@ -1,7 +1,7 @@
 const IMAGE_PATHS = {
   school: "images/school.png",
   lab: "images/lab.png",
-  classroom: "images/classroom.svg",
+  classroom: "images/classroom.png",
   phone: "images/phone.svg",
   assembly: "images/assembly.svg",
   sunrise: "images/sunrise.svg"
