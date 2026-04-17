@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rede de Escolhas: RPG Escolar sobre ECA Digital</title>
+  <style>
+    :root {
+      --bg: #f4f8ff;
+      --panel: rgba(255, 255, 255, 0.92);
+      --panel-2: rgba(240, 249, 255, 0.95);
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #2563eb;
+      --accent-2: #14b8a6;
+      --danger: #ef4444;
+      --good: #16a34a;
+      --warn: #d97706;
+      --ink: #1e293b;
+      --shadow: 0 20px 60px rgba(37, 99, 235, 0.12);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 25%),
+        radial-gradient(circle at top right, rgba(20, 184, 166, 0.10), transparent 30%),
+        linear-gradient(180deg, #eef6ff 0%, #f8fbff 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .shell {
+      width: min(1220px, calc(100% - 24px));
+      margin: 20px auto;
+      display: grid;
+      grid-template-columns: 330px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      backdrop-filter: blur(14px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    aside {
+      position: sticky;
+      top: 20px;
+      padding: 18px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .sigil {
+      width: 62px; height: 62px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(37,99,235,.12), rgba(20,184,166,.14));
+      display: grid; place-items: center;
+      border: 1px solid rgba(15,23,42,.08);
+      font-size: 28px;
+    }
+
+    .brand h1 { margin: 0; font-size: 1.12rem; line-height: 1.15; color: var(--ink); }
+    .brand p { margin: 4px 0 0; color: var(--muted); font-size: .92rem; }
+
+    .stat {
+      margin: 12px 0;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(248,250,252,0.88);
+      border: 1px solid rgba(15,23,42,0.06);
+    }
+
+    .stat-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: .95rem;
+      margin-bottom: 8px;
+      color: var(--ink);
+    }
+
+    .bar {
+      width: 100%;
+      height: 10px;
+      background: rgba(148,163,184,.18);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      border-radius: inherit;
+      transition: width .35s ease;
+    }
+
+    .life { background: linear-gradient(90deg, var(--danger), #fca5a5); }
+    .knowledge { background: linear-gradient(90deg, var(--accent), #93c5fd); }
+    .courage { background: linear-gradient(90deg, var(--warn), #fdba74); }
+    .empathy { background: linear-gradient(90deg, var(--good), #86efac); }
+
+    .inventory, .log, .quotes {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 20px;
+      background: rgba(248,250,252,0.9);
+      border: 1px solid rgba(15,23,42,.06);
+    }
+
+    .inventory h3, .log h3, .quotes h3 { margin: 0 0 10px; font-size: 1rem; color: var(--ink); }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .chip {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(37,99,235,.08);
+      color: #1d4ed8;
+      border: 1px solid rgba(37,99,235,.16);
+      font-size: .84rem;
+    }
+
+    .log ul { list-style: none; padding: 0; margin: 0; }
+    .log li {
+      color: var(--muted);
+      padding: 8px 0;
+      border-top: 1px dashed rgba(15,23,42,0.08);
+      font-size: .9rem;
+    }
+    .log li:first-child { border-top: 0; padding-top: 0; }
+
+    .quote-box {
+      font-size: .88rem;
+      line-height: 1.6;
+      color: var(--muted);
+      background: white;
+      border-radius: 16px;
+      padding: 12px;
+      border-left: 4px solid var(--accent);
+    }
+
+    .quote-box strong {
+      display: block;
+      color: var(--accent);
+      margin-top: 8px;
+      font-size: .82rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    main { padding: 18px; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .scene {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .story {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      font-weight: 700;
+      font-size: .72rem;
+    }
+
+    .title {
+      margin: 0;
+      font-size: clamp(1.8rem, 2.8vw, 3rem);
+      line-height: 1.02;
+      color: var(--ink);
+    }
+
+    .subtitle { margin: 0; color: var(--muted); font-size: 1rem; }
+
+    .art {
+      min-height: 380px;
+      background: linear-gradient(180deg, rgba(219, 234, 254, .9), rgba(204, 251, 241, .75));
+      border-left: 1px solid rgba(15,23,42,0.08);
+      display: grid;
+      place-items: center;
+      padding: 16px;
+    }
+
+    .art svg {
+      width: 100%;
+      height: auto;
+      max-width: 460px;
+      filter: drop-shadow(0 10px 24px rgba(15,23,42,.12));
+    }
+
+    .text {
+      font-size: 1.05rem;
+      line-height: 1.82;
+      color: var(--ink);
+      white-space: pre-line;
+    }
+
+    .choices {
+      display: grid;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    button.choice, .small-btn {
+      width: 100%;
+      text-align: left;
+      border: 1px solid rgba(15,23,42,.08);
+      border-radius: 18px;
+      color: var(--ink);
+      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(248,250,252,.95));
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: transform .16s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+      font: inherit;
+      box-shadow: 0 6px 20px rgba(15,23,42,.05);
+    }
+
+    button.choice:hover, .small-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(37,99,235,.35);
+      background: linear-gradient(180deg, rgba(239,246,255,1), rgba(240,253,250,1));
+      box-shadow: 0 10px 28px rgba(37,99,235,.08);
+    }
+
+    .choice-title { display: block; font-weight: 700; margin-bottom: 4px; }
+    .choice-desc { display: block; color: var(--muted); font-size: .92rem; }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .small-btn {
+      width: auto;
+      padding: 10px 12px;
+      border-radius: 14px;
+      text-align: center;
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .ending {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(219,234,254,.7);
+      border: 1px solid rgba(37,99,235,.18);
+    }
+
+    .mini-ref {
+      margin-top: 8px;
+      font-size: .83rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 980px) {
+      .shell { grid-template-columns: 1fr; }
+      aside { position: static; }
+      .scene { grid-template-columns: 1fr; }
+      .art { min-height: 260px; border-left: 0; border-top: 1px solid rgba(15,23,42,0.08); }
+    }
+  </style>
+</head>
+<body>
+  <!--
+  OBJETIVO:
+  Desenvolver a consciência crítica de adolescentes sobre o uso das tecnologias digitais, promovendo a compreensão dos conceitos de capitalismo de vigilância (Shoshana Zuboff) e dos direitos previstos no ECA Digital. O jogo busca estimular a tomada de decisões éticas, a autonomia digital e a capacidade de reconhecer práticas de coleta, análise e manipulação de dados.
+
+  DESCRIÇÃO:
+  "Rede de Escolhas" é um livro-jogo interativo em formato RPG ambientado no contexto escolar brasileiro. O jogador assume o papel de um estudante que investiga como aplicativos e plataformas digitais influenciam o comportamento dos jovens. Ao longo da narrativa, o jogador toma decisões que impactam atributos como Consciência Digital, Coragem e Cuidado Coletivo.
+  
+  O jogo integra conceitos do capitalismo de vigilância, como coleta massiva de dados, previsão comportamental e modulação de comportamento, articulando-os com situações reais vivenciadas por adolescentes (cyberbullying, exposição, vício em telas, publicidade direcionada).
+  
+  Além disso, o jogo incorpora princípios do ECA Digital, abordando proteção de dados, direitos digitais, papel da escola, família e sociedade, e estratégias de prevenção e enfrentamento de riscos online.
+
+  PÚBLICO-ALVO:
+  Adolescentes do Ensino Fundamental II (anos finais) e Ensino Médio (aproximadamente 12 a 18 anos), especialmente estudantes de escolas públicas brasileiras.
+  
+  O jogo também pode ser utilizado por professores como recurso didático em disciplinas como:
+  - Informática na Educação
+  - Projeto de Vida
+  - Sociologia
+  - Filosofia
+  - Educação Digital
+  
+  Indicado para atividades pedagógicas que envolvam:
+  - letramento digital crítico
+  - cidadania digital
+  - discussão ética sobre tecnologia
+  - prevenção de riscos no ambiente online
+  -->
+  <div class="shell">
+    <aside class="card">
+      <div class="brand">
+        <div class="sigil">🏫</div>
+        <div>
+          <h1>Rede de Escolhas</h1>
+          <p>Livro-jogo escolar sobre ECA Digital e vigilância</p>
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-top"><span>Energia</span><strong id="lifeValue">8/8</strong></div>
+        <div class="bar"><div class="fill life" id="lifeBar"></div></div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-top"><span>Consciência digital</span><strong id="knowledgeValue">1/6</strong></div>
+        <div class="bar"><div class="fill knowledge" id="knowledgeBar"></div></div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-top"><span>Coragem</span><strong id="courageValue">1/6</strong></div>
+        <div class="bar"><div class="fill courage" id="courageBar"></div></div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-top"><span>Cuidado coletivo</span><strong id="empathyValue">1/6</strong></div>
+        <div class="bar"><div class="fill empathy" id="empathyBar"></div></div>
+      </div>
+
+      <div class="inventory">
+        <h3>Inventário pedagógico</h3>
+        <div class="chips" id="inventory"></div>
+      </div>
+
+      <div class="quotes">
+        <h3>Caderno de citações</h3>
+        <div class="quote-box" id="quoteBox">
+          O capitalismo de vigilância reivindica a experiência humana como matéria-prima.
+          <strong>Shoshana Zuboff</strong>
+        </div>
+      </div>
+
+      <div class="log">
+        <h3>Registro da jornada</h3>
+        <ul id="journal"></ul>
+      </div>
+    </aside>
+
+    <main class="card hero">
+      <div class="scene">
+        <section class="art" id="artBox"></section>
+        <section class="story">
+          <div class="eyebrow" id="chapterLabel">Capítulo</div>
+          <h2 class="title" id="chapterTitle">...</h2>
+          <p class="subtitle" id="chapterSubtitle">...</p>
+          <div class="text" id="chapterText"></div>
+          <div class="mini-ref" id="chapterRef"></div>
+          <div class="ending" id="endingBox" style="display:none"></div>
+          <div class="choices" id="choices"></div>
+          <div class="toolbar">
+            <button class="small-btn" id="restartBtn">↺ Reiniciar</button>
+            <button class="small-btn" id="helpBtn">? Como jogar</button>
+          </div>
+          <div class="footer-note">Tema: escola, direitos digitais, proteção de dados e escolhas conscientes.</div>
+        </section>
+      </div>
+          <h2 class="title" id="chapterTitle">...</h2>
+          <p class="subtitle" id="chapterSubtitle">...</p>
+          <div class="text" id="chapterText"></div>
+          <div class="mini-ref" id="chapterRef"></div>
+          <div class="ending" id="endingBox" style="display:none"></div>
+          <div class="choices" id="choices"></div>
+          <div class="toolbar">
+            <button class="small-btn" id="restartBtn">↺ Reiniciar</button>
+            <button class="small-btn" id="helpBtn">? Como jogar</button>
+          </div>
+          <div class="footer-note">Tema: escola, direitos digitais, proteção de dados e escolhas conscientes.</div>
+        </section>
+        <section class="art" id="artBox"></section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const sceneArt = {
+      school: `
+        <svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" aria-label="Escola pública brasileira com internet e alunos">
+          <rect width="520" height="420" rx="28" fill="#e0f2fe"/>
+          <rect x="0" y="290" width="520" height="130" fill="#d1fae5"/>
+          <rect x="78" y="126" width="364" height="184" rx="12" fill="#bfdbfe" stroke="#2563eb" stroke-opacity=".25"/>
+          <rect x="110" y="154" width="82" height="62" rx="8" fill="#fff"/>
+          <rect x="218" y="154" width="82" height="62" rx="8" fill="#fff"/>
+          <rect x="326" y="154" width="82" height="62" rx="8" fill="#fff"/>
+          <rect x="220" y="236" width="80" height="74" rx="8" fill="#fff7ed"/>
+          <path d="M62 132 L260 48 L458 132" fill="#60a5fa"/>
+          <rect x="246" y="62" width="28" height="46" rx="6" fill="#1d4ed8"/>
+          <circle cx="418" cy="90" r="30" fill="#fde68a"/>
+          <g transform="translate(360,34)">
+            <ellipse cx="58" cy="58" rx="62" ry="34" fill="#dbeafe" opacity=".85"/>
+            <ellipse cx="58" cy="58" rx="42" ry="18" fill="#fff"/>
+            <circle cx="58" cy="58" r="12" fill="#2563eb"/>
+          </g>
+          <path d="M92 326 Q260 284 428 326" fill="none" stroke="#34d399" stroke-width="6" stroke-linecap="round"/>
+        </svg>`,
+      lab: `
+        <svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" aria-label="Laboratório escolar com computadores sendo utilizados por alunos">
+          <rect width="520" height="420" rx="28" fill="#f8fafc"/>
+          <rect x="48" y="82" width="424" height="246" rx="22" fill="#e2e8f0"/>
+          <rect x="84" y="120" width="112" height="76" rx="10" fill="#1e293b"/>
+          <rect x="204" y="120" width="112" height="76" rx="10" fill="#1e293b"/>
+          <rect x="324" y="120" width="112" height="76" rx="10" fill="#1e293b"/>
+          <rect x="102" y="204" width="76" height="10" rx="5" fill="#64748b"/>
+          <rect x="222" y="204" width="76" height="10" rx="5" fill="#64748b"/>
+          <rect x="342" y="204" width="76" height="10" rx="5" fill="#64748b"/>
+          <rect x="92" y="248" width="336" height="56" rx="14" fill="#cbd5e1"/>
+          <g transform="translate(352,238)">
+            <ellipse cx="68" cy="52" rx="70" ry="36" fill="#dbeafe"/>
+            <ellipse cx="68" cy="52" rx="50" ry="20" fill="#fff"/>
+            <circle cx="68" cy="52" r="12" fill="#2563eb"/>
+          </g>
+        </svg>`,
+      classroom: `
+        <svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" aria-label="Sala de aula">
+          <rect width="520" height="420" rx="28" fill="#fefce8"/>
+          <rect x="44" y="62" width="432" height="138" rx="16" fill="#dcfce7"/>
+          <rect x="78" y="92" width="364" height="84" rx="10" fill="#14532d"/>
+          <g fill="#fde68a">
+            <rect x="92" y="108" width="120" height="8" rx="4"/>
+            <rect x="92" y="126" width="94" height="8" rx="4"/>
+            <rect x="92" y="144" width="144" height="8" rx="4"/>
+          </g>
+          <rect x="90" y="244" width="110" height="56" rx="10" fill="#bfdbfe"/>
+          <rect x="206" y="244" width="110" height="56" rx="10" fill="#bfdbfe"/>
+          <rect x="322" y="244" width="110" height="56" rx="10" fill="#bfdbfe"/>
+          <rect x="90" y="314" width="110" height="28" rx="8" fill="#93c5fd"/>
+          <rect x="206" y="314" width="110" height="28" rx="8" fill="#93c5fd"/>
+          <rect x="322" y="314" width="110" height="28" rx="8" fill="#93c5fd"/>
+        </svg>`,
+      phone: `
+        <svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" aria-label="Celular com aplicativos e notificações influenciando o estudante">
+          <rect width="520" height="420" rx="28" fill="#e0f2fe"/>
+          <rect x="180" y="42" width="160" height="336" rx="28" fill="#1e293b"/>
+          <rect x="194" y="70" width="132" height="264" rx="16" fill="#e0f2fe"/>
+          <circle cx="260" cy="352" r="10" fill="#94a3b8"/>
+          <g>
+            <rect x="212" y="96" width="44" height="44" rx="12" fill="#60a5fa"/>
+            <rect x="264" y="96" width="44" height="44" rx="12" fill="#34d399"/>
+            <rect x="212" y="150" width="44" height="44" rx="12" fill="#fbbf24"/>
+            <rect x="264" y="150" width="44" height="44" rx="12" fill="#f472b6"/>
+          </g>
+          <g transform="translate(332,74)">
+            <ellipse cx="64" cy="44" rx="56" ry="28" fill="#dbeafe"/>
+            <ellipse cx="64" cy="44" rx="36" ry="16" fill="#fff"/>
+            <circle cx="64" cy="44" r="10" fill="#2563eb"/>
+          </g>
+        </svg>`,
+      assembly: `
+        <svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" aria-label="Assembleia escolar">
+          <rect width="520" height="420" rx="28" fill="#ecfdf5"/>
+          <circle cx="148" cy="150" r="42" fill="#60a5fa"/>
+          <circle cx="260" cy="128" r="46" fill="#34d399"/>
+          <circle cx="372" cy="150" r="42" fill="#f59e0b"/>
+          <rect x="108" y="198" width="80" height="116" rx="30" fill="#3b82f6"/>
+          <rect x="214" y="182" width="92" height="132" rx="32" fill="#10b981"/>
+          <rect x="332" y="198" width="80" height="116" rx="30" fill="#f97316"/>
+          <rect x="124" y="332" width="272" height="22" rx="11" fill="#86efac"/>
+        </svg>`,
+      sunrise: `
+        <svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" aria-label="Novo começo">
+          <defs>
+            <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#dbeafe"/>
+              <stop offset="100%" stop-color="#dcfce7"/>
+            </linearGradient>
+          </defs>
+          <rect width="520" height="420" rx="28" fill="url(#sky2)"/>
+          <circle cx="260" cy="198" r="70" fill="#fde68a"/>
+          <path d="M0 306 Q130 254 260 306 T520 302 V420 H0 Z" fill="#86efac"/>
+          <path d="M76 328 Q260 284 444 328" fill="none" stroke="#16a34a" stroke-width="6" stroke-linecap="round"/>
+        </svg>`
+    };
+
+    const quotePool = {
+      intro: '“O capitalismo de vigilância reivindica a experiência humana como matéria-prima gratuita.”\n— Shoshana Zuboff',
+      lab: '“Não basta mais automatizar o fluxo de informação sobre nós; a meta agora é nos automatizar.”\n— Shoshana Zuboff',
+      school: '“Nós não somos os clientes do capitalismo de vigilância. Nós somos as fontes do superávit.”\n— Shoshana Zuboff',
+      power: '“Ele sabe tudo sobre nós, ao passo que suas operações são programadas para não serem conhecidas por nós.”\n— Shoshana Zuboff',
+      rights: '“O direito ao futuro é uma dimensão central da liberdade.”\n— Shoshana Zuboff'
+    };
+
+    const nodes = {
+      intro: {
+        label: 'Prólogo',
+        title: 'A mensagem no grupo da turma',
+        subtitle: 'Escola Estadual Horizonte Aberto',
+        art: 'school',
+        quoteKey: 'intro',
+        ref: 'Baseado no ECA Digital: proteção de crianças e adolescentes no mundo online, educação digital e dever compartilhado de escola, família, Estado e empresas.',
+        text: `Você é estudante do ensino médio, seu nome é Lucas (ou Luana, se preferir imaginar assim). Na sua turma estão colegas como João, Ana, Pedro e Mariana. Na semana da Feira de Tecnologia da escola, vários colegas começam a receber anúncios estranhamente certeiros, convites para desafios humilhantes e vídeos que parecem conhecer seus medos.
+
+Sua amiga Lia mostra o celular: “Eu só pesquisei uma vez sobre ansiedade... agora tudo o que aparece pra mim tenta me prender na tela.”
+
+No mural digital do laboratório, alguém deixou uma frase atribuída a Shoshana Zuboff:
+“Se transformam nossa experiência em dados, precisamos aprender a defender nossos direitos.”
+
+A professora de projeto integrador propõe uma missão: investigar como a vigilância digital afeta adolescentes e como o ECA Digital pode orientar a proteção na escola.`,
+        choices: [
+          { text: 'Ir ao laboratório de informática analisar os aplicativos', desc: 'Começar pela investigação técnica.', next: 'labInvestigation', effects: { knowledge: 1 }, journal: 'Você iniciou a apuração pelos rastros digitais.' },
+          { text: 'Conversar com a professora e o grêmio estudantil', desc: 'Buscar ação coletiva e orientação escolar.', next: 'assemblyTalk', effects: { empathy: 1 }, journal: 'Você escolheu agir em conjunto com a escola.' },
+          { text: 'Examinar seu próprio celular e o dos colegas', desc: 'Partir da experiência cotidiana.', next: 'phoneCheck', effects: { courage: 1 }, journal: 'Você decidiu observar a vigilância no cotidiano.' }
+        ]
+      },
+      labInvestigation: {
+        label: 'Capítulo 1',
+        title: 'Laboratório de informática',
+        subtitle: 'Quem coleta o quê?',
+        art: 'lab',
+        quoteKey: 'lab',
+        ref: 'ECA Digital: empresas devem proteger dados de crianças e adolescentes, não manipular consumo e adotar plataformas mais seguras.',
+        text: `No laboratório, a professora abre com a turma os termos de uso de três aplicativos populares. Vocês percebem pedidos excessivos de acesso: câmera, localização, microfone, contatos e tempo de uso.
+
+Em um painel da aula, surge uma discussão: se adolescentes usam redes, jogos e aplicativos todos os dias, quem responde quando esses sistemas exageram na coleta ou estimulam dependência?
+
+Você percebe que o problema não é apenas “usar tecnologia”, mas como a tecnologia foi desenhada para extrair atenção e dados — exatamente o que Shoshana Zuboff chama de capitalismo de vigilância: transformar tudo o que você faz em dados para prever e influenciar seu comportamento.`,
+        choices: [
+          { text: 'Mapear permissões abusivas e registrar evidências', desc: 'Ganhar material para a escola agir.', next: 'afterEvidence', effects: { knowledge: 1 }, item: 'Relatório de Permissões', journal: 'Você registrou provas sobre coleta excessiva.' },
+          { text: 'Pesquisar o que o ECA Digital diz sobre empresas e proteção', desc: 'Ligar prática e direito.', next: 'ecaStudy', effects: { knowledge: 1, empathy: 1 }, journal: 'Você conectou tecnologia com proteção jurídica.' },
+          { text: 'Ignorar os termos e focar só no que aparece na tela', desc: 'Entender os sintomas antes das causas.', next: 'attentionTrap', effects: { courage: 1 }, journal: 'Você preferiu analisar o efeito visível sobre os colegas.' }
+        ]
+      },
+      assemblyTalk: {
+        label: 'Capítulo 1',
+        title: 'Reunião com a professora e o grêmio',
+        subtitle: 'A escola como espaço de proteção',
+        art: 'assembly',
+        quoteKey: 'school',
+        ref: 'ECA Digital: a escola deve ensinar educação digital, orientar sobre riscos, combater cyberbullying e dialogar com as famílias.',
+        text: `Na sala multiuso, a professora lembra que a escola não pode se omitir diante dos riscos digitais. O grêmio conta casos de exposição indevida de fotos, perfis falsos e campanhas de humilhação em grupos fechados.
+
+Vocês concluem que a escola precisa mais do que regras punitivas: precisa de educação digital crítica, apoio às vítimas e debate sobre direitos.
+
+Lia diz: “Se os aplicativos ganham com nossa distração, a escola tem que ajudar a gente a recuperar atenção e autonomia.”`,
+        choices: [
+          { text: 'Organizar uma escuta com estudantes afetados', desc: 'Entender os impactos humanos.', next: 'listeningCircle', effects: { empathy: 1 }, item: 'Mapa de Relatos', journal: 'Você abriu espaço para ouvir quem sofre os impactos.' },
+          { text: 'Propor uma campanha de conscientização imediata', desc: 'Agir rápido com informação.', next: 'campaignBuild', effects: { courage: 1, empathy: 1 }, journal: 'Você sugeriu resposta educativa urgente.' },
+          { text: 'Voltar ao laboratório para reunir provas técnicas', desc: 'Combinar fala com evidência.', next: 'labInvestigation', effects: { knowledge: 1 }, journal: 'Você percebeu que denúncia precisa de base.' }
+        ]
+      },
+      phoneCheck: {
+        label: 'Capítulo 1',
+        title: 'Tela, notificações e rastros',
+        subtitle: 'O cotidiano como campo de investigação',
+        art: 'phone',
+        quoteKey: 'power',
+        ref: 'ECA Digital: riscos incluem cyberbullying, conteúdo impróprio, ansiedade, vício em telas e manipulação comportamental.',
+        text: `Você e seus colegas comparam as notificações recebidas em apenas uma manhã. Quase tudo parece desenhado para provocar reação rápida: medo de perder algo, urgência, curiosidade, comparação social.
+
+Lia percebe que após assistir a vídeos sobre aparência, surgem anúncios de produtos e conteúdos que pioram sua autoestima. Outro colega relata pressão em jogos parecidos com apostas.
+
+Fica claro que não se trata apenas de conteúdo: trata-se de arquitetura de influência.
+
+Pedro comenta: “Então a gente não é usuário... a gente é tipo o produto?”
+
+Você lembra de um conceito importante: no capitalismo de vigilância, os usuários não são clientes — são fontes de dados e lucro.`,
+        choices: [
+          { text: 'Registrar padrões de manipulação emocional', desc: 'Entender como a atenção é capturada.', next: 'attentionTrap', effects: { knowledge: 1 }, item: 'Diário de Notificações', journal: 'Você anotou os gatilhos que puxam comportamento.' },
+          { text: 'Levar os casos para a professora e o grêmio', desc: 'Transformar experiência em ação escolar.', next: 'assemblyTalk', effects: { empathy: 1 }, journal: 'Você decidiu não enfrentar isso sozinho.' },
+          { text: 'Pesquisar canais de ajuda e denúncia', desc: 'Aprender o que fazer em situações graves.', next: 'helpChannels', effects: { courage: 1, empathy: 1 }, journal: 'Você buscou caminhos concretos de proteção.' }
+        ]
+      },
+      ecaStudy: {
+        label: 'Capítulo 2',
+        title: 'Estudo do ECA Digital',
+        subtitle: 'Direitos não são detalhes',
+        art: 'classroom',
+        quoteKey: 'rights',
+        ref: 'ECA Digital: proteção integral, dever do poder público, responsabilidade das empresas, educação digital nas escolas e internet mais segura.',
+        text: `Durante a pesquisa, você encontra pontos decisivos: as empresas têm dever de cuidado; não devem usar dados para manipular consumo; devem proteger crianças e adolescentes por padrão; e a escola tem papel fundamental na educação digital.
+
+A turma percebe que o ECA Digital não trata apenas de proibir. Ele organiza responsabilidades e fortalece direitos.
+
+A professora resume: “Direito digital é também direito à dignidade, à segurança e ao desenvolvimento saudável.”`,
+        choices: [
+          { text: 'Preparar um guia escolar de direitos digitais', desc: 'Transformar estudo em material educativo.', next: 'campaignBuild', effects: { knowledge: 1, empathy: 1 }, item: 'Guia de Direitos', journal: 'Você converteu a lei em linguagem acessível.' },
+          { text: 'Cruzar o ECA Digital com os casos da escola', desc: 'Aplicar a lei a situações reais.', next: 'caseCrossing', effects: { knowledge: 1 }, journal: 'Você aproximou norma e realidade escolar.' }
+        ]
+      },
+      attentionTrap: {
+        label: 'Capítulo 2',
+        title: 'A armadilha da atenção',
+        subtitle: 'Quando o design quer decidir por você',
+        art: 'phone',
+        quoteKey: 'lab',
+        ref: 'Inspirado em Zuboff: produtos de predição e modificação comportamental; relacionado ao ECA Digital quanto à proteção contra manipulação e riscos à saúde mental.',
+        text: `Ao analisar a interface dos apps, você percebe uma sequência recorrente: notificação, curiosidade, clique, retenção, comparação, repetição.
+
+Não é coincidência. Os sistemas parecem aprender quando você está mais vulnerável e intensificam o estímulo exatamente ali.
+
+Você anota no caderno: “Se a plataforma mede nossa fragilidade para aumentar engajamento, isso fere a ideia de proteção integral.”
+
+Ana completa: “Então eles não querem só saber o que a gente faz... querem influenciar o que a gente vai fazer.”
+
+Isso é exatamente a lógica do capitalismo de vigilância: prever e modificar comportamento.`,
+        choices: [
+          { text: 'Transformar a análise em oficina para a turma', desc: 'Espalhar consciência digital.', next: 'campaignBuild', effects: { knowledge: 1, empathy: 1 }, journal: 'Você decidiu ensinar o que descobriu.' },
+          { text: 'Levar o problema à direção e pedir protocolo escolar', desc: 'Buscar resposta institucional.', next: 'schoolCouncil', effects: { courage: 1 }, journal: 'Você cobrou responsabilidade da escola.' },
+          { text: 'Cruzar os dados com relatos de cyberbullying', desc: 'Entender como influência e violência se conectam.', next: 'listeningCircle', effects: { empathy: 1 }, journal: 'Você percebeu que algoritmo e sofrimento social se cruzam.' }
+        ]
+      },
+      helpChannels: {
+        label: 'Capítulo 2',
+        title: 'Canais de ajuda e denúncia',
+        subtitle: 'Proteger também é saber onde recorrer',
+        art: 'classroom',
+        quoteKey: 'rights',
+        ref: 'ECA Digital: diante de humilhação, chantagem, ameaça, assédio ou exposição, é preciso buscar ajuda; também existem canais como Conselho Tutelar, Defensoria, Delegacia, Disque 100 e SaferNet.',
+        text: `Você descobre que situações de exposição, assédio, chantagem e ameaça no ambiente digital não devem ser tratadas como “brincadeira”.
+
+A professora orienta a turma a registrar evidências, não compartilhar conteúdos abusivos e procurar apoio adulto, institucional e, quando necessário, canais oficiais de denúncia.
+
+Esse conhecimento muda o clima da investigação: agora a escola não está apenas estudando um problema, está se preparando para proteger pessoas reais.`,
+        choices: [
+          { text: 'Criar um mural de ajuda segura para a escola', desc: 'Transformar informação em acolhimento.', next: 'campaignBuild', effects: { empathy: 1, courage: 1 }, item: 'Mural de Apoio', journal: 'Você ajudou a tornar a proteção visível.' },
+          { text: 'Levar os materiais para a reunião escolar', desc: 'Integrar prevenção e ação institucional.', next: 'schoolCouncil', effects: { knowledge: 1 }, journal: 'Você organizou respostas concretas para a escola.' }
+        ]
+      },
+      listeningCircle: {
+        label: 'Capítulo 2',
+        title: 'Roda de escuta',
+        subtitle: 'O dano digital tem rosto e nome',
+        art: 'assembly',
+        quoteKey: 'school',
+        ref: 'ECA Digital: cyberbullying é crime; escola e família devem dialogar e educar para o uso consciente da tecnologia.',
+        text: `Na roda de conversa, colegas relatam ansiedade, exposição de imagens, exclusão em grupos, medo de perder status social e sensação de que o celular nunca descansa.
+
+Você nota que o problema não é só técnico. É emocional, social e pedagógico.
+
+Lia diz algo que silencia a sala: “Quando o aplicativo parece me conhecer melhor que eu mesma, começo a duvidar do que realmente escolhi.”`,
+        choices: [
+          { text: 'Levar os relatos ao conselho escolar', desc: 'Fortalecer a resposta institucional.', next: 'schoolCouncil', effects: { empathy: 1 }, item: 'Dossiê de Relatos', journal: 'Você levou o sofrimento real para o centro da decisão.' },
+          { text: 'Transformar os relatos em campanha educativa', desc: 'Conscientizar sem expor ninguém.', next: 'campaignBuild', effects: { empathy: 1, knowledge: 1 }, journal: 'Você transformou escuta em ação educativa.' }
+        ]
+      },
+      afterEvidence: {
+        label: 'Capítulo 3',
+        title: 'As provas se acumulam',
+        subtitle: 'Dados, hábitos e previsões',
+        art: 'lab',
+        quoteKey: 'school',
+        ref: 'Inspirado em Zuboff: adolescentes não são clientes, mas fontes de dados; relacionado ao ECA Digital quanto ao dever das empresas e da escola em proteger.',
+        text: `Com relatórios, capturas de tela e anotações de uso, você percebe um padrão: coleta excessiva, sugestões direcionadas, retenção prolongada e vulnerabilidade juvenil explorada como recurso.
+
+A professora pede que a turma decida o próximo passo: produzir apenas um trabalho escolar, ou transformar a investigação em intervenção na comunidade escolar.
+
+Ela reforça: “Se vocês entenderam o capitalismo de vigilância, agora precisam decidir: vão só estudar ou vão agir sobre isso?”`,
+        choices: [
+          { text: 'Produzir uma apresentação crítica com base em Zuboff e ECA Digital', desc: 'Trabalhar argumento, teoria e direitos.', next: 'schoolCouncil', effects: { knowledge: 1 }, item: 'Apresentação Crítica', journal: 'Você consolidou teoria e prática em um material forte.' },
+          { text: 'Criar campanha educativa com linguagem juvenil', desc: 'Levar o debate a mais estudantes.', next: 'campaignBuild', effects: { empathy: 1, courage: 1 }, journal: 'Você transformou a pesquisa em mobilização.' }
+        ]
+      },
+      caseCrossing: {
+        label: 'Capítulo 3',
+        title: 'Cruzar lei e realidade',
+        subtitle: 'Quando a teoria encontra a escola',
+        art: 'classroom',
+        quoteKey: 'power',
+        ref: 'ECA Digital: publicidade direcionada, manipulação de consumo, proteção de dados, papel da escola e dever de plataformas mais seguras.',
+        text: `Vocês cruzam o texto do ECA Digital com situações vividas na escola: vídeos que incentivam comparação cruel, convites persistentes para compras, pressão em jogos e coleta invisível de dados.
+
+Mariana observa: “Tudo isso parece planejado pra prender a gente.”
+
+Você percebe que isso se conecta diretamente com o capitalismo de vigilância: dados são usados para prever e induzir decisões.
+
+A turma conclui que a educação digital precisa ser crítica: não basta ensinar a clicar, é preciso ensinar a perguntar quem lucra, como influencia e quais direitos estão em jogo.`,
+        choices: [
+          { text: 'Levar a análise ao conselho escolar', desc: 'Buscar políticas internas.', next: 'schoolCouncil', effects: { knowledge: 1, courage: 1 }, journal: 'Você levou diagnóstico e proposta para decisão coletiva.' },
+          { text: 'Transformar a análise em oficina aberta', desc: 'Fazer da escola um espaço de formação.', next: 'campaignBuild', effects: { empathy: 1 }, journal: 'Você escolheu formar em vez de apenas alertar.' }
+        ]
+      },
+      campaignBuild: {
+        label: 'Capítulo 4',
+        title: 'Campanha “Sua atenção tem valor”',
+        subtitle: 'A escola começa a reagir',
+        art: 'classroom',
+        quoteKey: 'intro',
+        ref: 'ECA Digital: educação digital nas escolas, orientação sobre riscos, proteção da imagem, combate ao cyberbullying e responsabilidade compartilhada.',
+        text: `Vocês criam cartazes, cards, podcasts curtos e rodas de conversa. O lema da campanha é simples: “Nem tudo que prende sua atenção merece sua confiança.”
+
+A ação cresce. Famílias começam a participar. Professores pedem materiais. Estudantes querem saber como revisar permissões, evitar exposição e reconhecer manipulação.
+
+Agora é hora de decidir o alcance da intervenção.`,
+        choices: [
+          { text: 'Levar a campanha ao conselho escolar para virar política permanente', desc: 'Mudança institucional.', next: 'schoolCouncil', effects: { courage: 1, empathy: 1 }, journal: 'Você buscou transformar campanha em compromisso da escola.' },
+          { text: 'Expandir a campanha para toda a comunidade', desc: 'Mais alcance, mais responsabilidade.', next: 'communityAction', effects: { empathy: 1 }, item: 'Kit Educativo', journal: 'Você ampliou a ação para além da sala de aula.' }
+        ]
+      },
+      schoolCouncil: {
+        label: 'Capítulo 5',
+        title: 'Conselho escolar extraordinário',
+        subtitle: 'Decidir como a escola vai proteger',
+        art: 'assembly',
+        quoteKey: 'rights',
+        ref: 'ECA Digital: a escola deve educar, orientar, dialogar com famílias e criar regras claras; empresas e poder público também têm deveres.',
+        text: `No conselho escolar, direção, professores, estudantes e famílias analisam suas descobertas. Há debate intenso.
+
+Alguns querem apenas proibir celulares. Outros defendem que proibir sem educar não resolve. Você precisa ajudar a construir a decisão final.
+
+A professora sussurra: “Escolha um caminho que proteja sem silenciar, que eduque sem simplificar.”`,
+        dynamicChoices: (state) => {
+          const choices = [];
+          choices.push({ text: 'Propor política escolar de educação digital crítica', desc: 'Exige consciência digital e cuidado coletivo.', next: 'finalAwakening', check: (s) => s.knowledge >= 4 && s.empathy >= 4, failNext: 'finalPartial', journal: 'Você propôs uma proteção baseada em direitos e formação.' });
+          choices.push({ text: 'Defender só uma proibição rígida do uso', desc: 'Resposta rápida, porém limitada.', next: 'finalRestriction', effects: { courage: 1 }, journal: 'Você apoiou uma solução imediata e restritiva.' });
+          if (state.items.includes('Mural de Apoio') || state.items.includes('Guia de Direitos') || state.items.includes('Kit Educativo')) {
+            choices.push({ text: 'Apresentar materiais e plano de ação com acolhimento', desc: 'Transformar a escola em rede de proteção.', next: 'finalProtection', effects: { empathy: 1 }, journal: 'Você apresentou soluções concretas e pedagógicas.' });
+          }
+          return choices;
+        }
+      },
+      communityAction: {
+        label: 'Capítulo 5',
+        title: 'A comunidade entra no debate',
+        subtitle: 'Família, escola e direitos digitais',
+        art: 'school',
+        quoteKey: 'school',
+        ref: 'ECA Digital: família, escola, sociedade, Estado e empresas compartilham o dever de proteção.',
+        text: `Na reunião ampliada, responsáveis admitem dúvidas: quando dar celular? como orientar sem vigiar excessivamente? como proteger a imagem dos filhos? como reagir a chantagem, cyberbullying e exposição?
+
+Você percebe que a melhor resposta não é o pânico, mas uma cultura de proteção, diálogo e uso consciente.`,
+        choices: [
+          { text: 'Levar a proposta comunitária ao conselho escolar', desc: 'Consolidar a mudança.', next: 'schoolCouncil', effects: { empathy: 1, knowledge: 1 }, journal: 'Você levou a voz da comunidade para a decisão final.' },
+          { text: 'Criar um pacto digital da escola', desc: 'Compromisso coletivo e permanente.', next: 'finalProtection', check: (s) => s.empathy >= 4, failNext: 'finalPartial', journal: 'Você ajudou a formular um pacto de convivência digital.' }
+        ]
+      },
+      finalAwakening: {
+        label: 'Final',
+        title: 'Escola que ensina a escolher',
+        subtitle: 'Final verdadeiro',
+        art: 'sunrise',
+        ending: `O conselho aprova uma política escolar de educação digital crítica. A escola passa a trabalhar proteção de dados, cyberbullying, saúde mental, exposição de imagem, publicidade direcionada e responsabilidade das plataformas.
+
+Celulares deixam de ser tratados apenas como problema disciplinar e passam a ser tema de formação ética, cidadã e tecnológica.
+
+A comunidade aprende que proteger adolescentes no digital não significa isolá-los do mundo, mas equipá-los para reconhecer manipulação, defender direitos e agir em coletivo.
+
+Sua investigação vira referência na escola. Vocês não venceram a internet. Fizeram algo mais importante: ensinaram a turma a não ser conduzida em silêncio.`,
+        score: 'Final verdadeiro: você articulou teoria, direitos e ação pedagógica duradoura.'
+      },
+      finalProtection: {
+        label: 'Final',
+        title: 'Rede de proteção em movimento',
+        subtitle: 'Final de cuidado coletivo',
+        art: 'assembly',
+        ending: `A escola cria um pacto digital com estudantes, famílias e professores. Há mural de apoio, oficinas, protocolos de acolhimento e atividades permanentes sobre direitos digitais.
+
+Casos de humilhação e exposição passam a ser tratados com seriedade, escuta e encaminhamento adequado.
+
+Talvez nem tudo mude de uma vez, mas agora ninguém está sozinho. A proteção deixa de ser discurso e vira prática cotidiana.`,
+        score: 'Final de cuidado coletivo: você fortaleceu a escola como comunidade protetora.'
+      },
+      finalRestriction: {
+        label: 'Final',
+        title: 'Silêncio nas mochilas, problema nas telas',
+        subtitle: 'Final de solução incompleta',
+        art: 'classroom',
+        ending: `O conselho decide por uma proibição rígida. Nos primeiros dias, parece funcionar: há menos distração em sala. Mas logo fica evidente que os problemas continuam fora dos muros e sem mediação crítica.
+
+Sem educação digital consistente, muitos estudantes seguem vulneráveis à manipulação, ao cyberbullying e à coleta abusiva de dados.
+
+Você percebe que restringir pode até conter sintomas, mas não ensina autonomia.`,
+        score: 'Final de solução incompleta: houve resposta, mas faltou formação crítica.'
+      },
+      finalPartial: {
+        label: 'Final',
+        title: 'Uma fissura importante',
+        subtitle: 'Final intermediário',
+        art: 'sunrise',
+        ending: `A escola reconhece o problema, mas adota apenas medidas pontuais. Sua apresentação provoca debate, porém ainda falta continuidade.
+
+Mesmo assim, algo mudou: estudantes começaram a fazer perguntas melhores, professores passaram a observar novos sinais e famílias entenderam que a proteção digital precisa ser compartilhada.
+
+Nem toda transformação nasce pronta. Às vezes, ela começa como pergunta incômoda.`,
+        score: 'Final intermediário: você abriu o debate, mas a mudança ainda precisa amadurecer.'
+      }
+    };
+
+    const initialState = () => ({
+      life: 8,
+      maxLife: 8,
+      knowledge: 1,
+      courage: 1,
+      empathy: 1,
+      maxStat: 6,
+      items: [],
+      journal: ['Você iniciou a investigação sobre direitos digitais na escola.'],
+      current: 'intro'
+    });
+
+    let state = initialState();
+
+    const refs = {
+      chapterLabel: document.getElementById('chapterLabel'),
+      chapterTitle: document.getElementById('chapterTitle'),
+      chapterSubtitle: document.getElementById('chapterSubtitle'),
+      chapterText: document.getElementById('chapterText'),
+      chapterRef: document.getElementById('chapterRef'),
+      choices: document.getElementById('choices'),
+      artBox: document.getElementById('artBox'),
+      inventory: document.getElementById('inventory'),
+      journal: document.getElementById('journal'),
+      quoteBox: document.getElementById('quoteBox'),
+      lifeValue: document.getElementById('lifeValue'),
+      knowledgeValue: document.getElementById('knowledgeValue'),
+      courageValue: document.getElementById('courageValue'),
+      empathyValue: document.getElementById('empathyValue'),
+      lifeBar: document.getElementById('lifeBar'),
+      knowledgeBar: document.getElementById('knowledgeBar'),
+      courageBar: document.getElementById('courageBar'),
+      empathyBar: document.getElementById('empathyBar'),
+      endingBox: document.getElementById('endingBox')
+    };
+
+    function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
+
+    function addItem(item) {
+      if (item && !state.items.includes(item)) state.items.push(item);
+    }
+
+    function applyEffects(effects = {}) {
+      state.life = clamp(state.life + (effects.life || 0), 0, state.maxLife);
+      state.knowledge = clamp(state.knowledge + (effects.knowledge || 0), 0, state.maxStat);
+      state.courage = clamp(state.courage + (effects.courage || 0), 0, state.maxStat);
+      state.empathy = clamp(state.empathy + (effects.empathy || 0), 0, state.maxStat);
+    }
+
+    function updateStats() {
+      refs.lifeValue.textContent = `${state.life}/${state.maxLife}`;
+      refs.knowledgeValue.textContent = `${state.knowledge}/${state.maxStat}`;
+      refs.courageValue.textContent = `${state.courage}/${state.maxStat}`;
+      refs.empathyValue.textContent = `${state.empathy}/${state.maxStat}`;
+      refs.lifeBar.style.width = `${(state.life / state.maxLife) * 100}%`;
+      refs.knowledgeBar.style.width = `${(state.knowledge / state.maxStat) * 100}%`;
+      refs.courageBar.style.width = `${(state.courage / state.maxStat) * 100}%`;
+      refs.empathyBar.style.width = `${(state.empathy / state.maxStat) * 100}%`;
+    }
+
+    function updateInventory() {
+      refs.inventory.innerHTML = '';
+      if (!state.items.length) {
+        refs.inventory.innerHTML = '<span class="chip">Sem materiais ainda</span>';
+        return;
+      }
+      state.items.forEach(item => {
+        const span = document.createElement('span');
+        span.className = 'chip';
+        span.textContent = item;
+        refs.inventory.appendChild(span);
+      });
+    }
+
+    function updateJournal() {
+      refs.journal.innerHTML = '';
+      [...state.journal].slice(-6).reverse().forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = entry;
+        refs.journal.appendChild(li);
+      });
+    }
+
+    function updateQuote(node) {
+      const text = quotePool[node.quoteKey] || quotePool.intro;
+      refs.quoteBox.innerHTML = text.replace('\n', '<br><strong>').replace('— Shoshana Zuboff', 'Shoshana Zuboff</strong>');
+      if (!text.includes('—')) {
+        refs.quoteBox.innerHTML = `${text}<strong>Shoshana Zuboff</strong>`;
+      }
+    }
+
+    function choose(option) {
+      if (option.requireItem && !state.items.includes(option.requireItem)) {
+        alert(`Você precisa do item: ${option.requireItem}`);
+        return;
+      }
+
+      if (option.check && !option.check(state)) {
+        state.journal.push('A proposta ainda precisava de mais preparo coletivo ou repertório crítico.');
+        state.current = option.failNext || 'finalPartial';
+        render();
+        return;
+      }
+
+      applyEffects(option.effects);
+      addItem(option.item);
+      if (option.journal) state.journal.push(option.journal);
+
+      if (state.life <= 0) {
+        state.current = 'finalPartial';
+      } else {
+        state.current = option.next;
+      }
+      render();
+    }
+
+    function renderChoices(node) {
+      refs.choices.innerHTML = '';
+      const choices = node.dynamicChoices ? node.dynamicChoices(state) : (node.choices || []);
+      choices.forEach(option => {
+        if (option.visible && !option.visible(state)) return;
+        const btn = document.createElement('button');
+        btn.className = 'choice';
+        btn.innerHTML = `<span class="choice-title">${option.text}</span><span class="choice-desc">${option.desc || ''}</span>`;
+        btn.addEventListener('click', () => choose(option));
+        refs.choices.appendChild(btn);
+      });
+    }
+
+    function render() {
+      const node = nodes[state.current];
+      refs.chapterLabel.textContent = node.label;
+      refs.chapterTitle.textContent = node.title;
+      refs.chapterSubtitle.textContent = node.subtitle || '';
+      refs.chapterText.textContent = node.text || '';
+      refs.chapterRef.textContent = node.ref || '';
+      refs.artBox.innerHTML = sceneArt[node.art] || '';
+      updateQuote(node);
+
+      refs.endingBox.style.display = node.ending ? 'block' : 'none';
+      refs.endingBox.innerHTML = node.ending ? `<div style="white-space:pre-line; line-height:1.8">${node.ending}</div><div style="margin-top:10px; color:#2563eb; font-weight:700">${node.score || ''}</div>` : '';
+
+      renderChoices(node);
+      if (node.ending) {
+        const restart = document.createElement('button');
+        restart.className = 'choice';
+        restart.innerHTML = '<span class="choice-title">Jogar novamente</span><span class="choice-desc">Explorar outro caminho na escola e descobrir outro final.</span>';
+        restart.addEventListener('click', resetGame);
+        refs.choices.appendChild(restart);
+      }
+
+      updateStats();
+      updateInventory();
+      updateJournal();
+    }
+
+    function resetGame() {
+      state = initialState();
+      render();
+    }
+
+    document.getElementById('restartBtn').addEventListener('click', resetGame);
+    document.getElementById('helpBtn').addEventListener('click', () => {
+      alert('Como jogar:\n\n1. Leia a situação escolar apresentada.\n2. Faça escolhas.\n3. Suas decisões alteram Consciência Digital, Coragem e Cuidado Coletivo.\n4. Alguns finais exigem mais preparo teórico, empatia e materiais produzidos na jornada.\n5. O jogo foi inspirado no ECA Digital e em ideias de Shoshana Zuboff sobre capitalismo de vigilância.');
+    });
+
+    render();
+  </script>
+</body>
+</html>
